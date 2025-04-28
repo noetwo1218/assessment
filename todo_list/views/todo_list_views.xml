@@ -1,0 +1,89 @@
+<odoo>
+    <record id="view_todo_list_form" model="ir.ui.view">
+        <field name="name">todo.list.form</field>
+        <field name="model">todo.list</field>
+        <field name="arch" type="xml">
+            <form string="Todo List">
+                <header>
+                    <button name="action_start_progress" type="object" string="Start Progress" invisible="state != 'draft'"/>
+                    <button name="action_mark_complete" type="object" string="Mark Complete" invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,complete"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="state not in ['draft','in_progress']"/>
+                            <field name="tag_ids" widget="many2many_tags" readonly="state not in ['draft','in_progress']"/>
+                        </group>
+                        <group>
+                            <field name="start_date" readonly="state not in ['draft','in_progress']"/>
+                            <field name="end_date" readonly="state not in ['draft','in_progress']"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="List" name="data_list">
+                            <field name="task_ids" readonly="state not in ['draft','in_progress']">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="is_done" column_invisible="parent.state not in ('in_progress', 'complete')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Attendee" name="data_attendee">
+                            <field name="attendee_ids" readonly="state not in ['draft','in_progress']">
+                                <list editable="bottom">
+                                    <field name="user_id"/>
+                                </list>
+                            </field>
+
+                        </page>
+                    </notebook>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="view_todo_list_list" model="ir.ui.view">
+        <field name="name">todo.list.list</field>
+        <field name="model">todo.list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="action_todo_all" model="ir.actions.act_window">
+        <field name="name">All Todo Lists</field>
+        <field name="res_model">todo.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <record id="action_todo_uncomplete" model="ir.actions.act_window">
+        <field name="name">Uncomplete Todo Lists</field>
+        <field name="res_model">todo.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('state', '=', 'draft'), ('state', '=', 'in_progress')]</field>
+    </record>
+
+    <record id="action_todo_complete" model="ir.actions.act_window">
+        <field name="name">Completed Todo Lists</field>
+        <field name="res_model">todo.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'complete')]</field>
+    </record>
+
+
+    <menuitem id="menu_todo_root" name="Todo List" sequence="10" action="action_todo_all"/>
+    <menuitem id="menu_todo_all" name="All" parent="todo_list.menu_todo_root" action="action_todo_all"/>
+    <menuitem id="menu_todo_uncomplete" name="Uncomplete" parent="todo_list.menu_todo_root" action="action_todo_uncomplete"/>
+    <menuitem id="menu_todo_complete" name="Complete" parent="todo_list.menu_todo_root" action="action_todo_complete"/>
+</odoo>
