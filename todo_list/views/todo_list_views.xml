@@ -5,8 +5,8 @@
         <field name="arch" type="xml">
             <form string="Todo List">
                 <header>
-                    <button name="action_start_progress" type="object" string="Start Progress" invisible="state != 'draft'"/>
-                    <button name="action_mark_complete" type="object" string="Mark Complete" invisible="state != 'in_progress'"/>
+                    <button name="action_start_progress" type="object" string="In Progress" invisible="state != 'draft'"/>
+                    <button name="action_mark_complete" type="object" string="Done" invisible="state != 'in_progress'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,complete"/>
                 </header>
                 <sheet>

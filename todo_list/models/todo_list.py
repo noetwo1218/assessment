@@ -29,10 +29,10 @@ class TodoList(models.Model):
 
     def action_mark_complete(self):
         for rec in self:
+            if not rec.task_ids or not rec.attendee_ids:
+                raise ValidationError('Please fill in both Tasks and Attendees before marking as Complete.')
+
             if all(task.is_done for task in rec.task_ids):
                 rec.state = 'complete'
-
-    # def write(self, vals):
-    #     if self.state == 'complete':
-    #         raise ValidationError('Cannot edit a completed Todo List.')
-    #     return super(TodoList, self).write(vals)
+            else:
+                raise ValidationError('All tasks must be marked as Done before completing the Todo List.')
